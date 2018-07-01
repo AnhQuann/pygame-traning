@@ -1,15 +1,16 @@
 import pygame
 from player.player_bullet import PlayerBullet
 import game_object
+from game_object import GameObject
+from frame_counter import FrameCounter
 
-class Player:
+class Player(GameObject):
     def __init__(self, x, y, input_manager):
-        self.x = x
-        self.y = y
+        GameObject.__init__(self, x, y)
         self.input_manager = input_manager
         self.image = pygame.image.load("images/player/player1.png")
         self.shoot_lock = False
-        self.count = 0
+        self.counter = FrameCounter(20)
 
     def update(self):
         self.move()
@@ -34,12 +35,12 @@ class Player:
 
     def shoot(self):
         if self.input_manager.x_pressed and not self.shoot_lock:
-            bullet = PlayerBullet(self.x, self.y)
-            game_object.add(bullet)
+            bullet = game_object.recycle(PlayerBullet, self.x, self.y - 25)
+            # game_object.add(bullet)
             self.shoot_lock = True
 
         if self.shoot_lock:
-            self.count += 1
-            if self.count == 20:
-                self.count = 0
+            self.counter.run()
+            if self.counter.expired:
                 self.shoot_lock = False
+                self.counter.reset()

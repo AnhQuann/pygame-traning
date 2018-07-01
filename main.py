@@ -1,6 +1,6 @@
 import pygame
 from player.player import Player
-from enemy.enemy import Enemy
+from enemy.enemy_spawner import EnemySpawner
 import game_object
 from input.input_manager import InputManager
 
@@ -13,11 +13,11 @@ pygame.init()
 SIZE = (600, 800)
 canvas = pygame.display.set_mode(SIZE)
 input_manager = InputManager()
-player = Player(100, 600, input_manager)
-enemy = Enemy(300, 200)
+player = Player(200, 300, input_manager)
+enemy_spawner = EnemySpawner()
 
 game_object.add(player)
-game_object.add(enemy)
+game_object.add(enemy_spawner)
 
 loop = True
 clock = pygame.time.Clock()
