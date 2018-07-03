@@ -8,6 +8,14 @@ def update():
     for obj in game_objects:
         obj.update()
 
+def collide_with(box_collider, obj_type):
+    for obj in game_objects:
+        if obj.box_collider is not None:
+            if obj.box_collider.collide_with(box_collider) and type(obj) == obj_type:
+                return obj
+    
+    return None
+
 def recycle(obj_type, x, y):
     for obj in game_objects:
         if type(obj) == obj_type and not obj.is_active:
@@ -23,13 +31,7 @@ def recycle(obj_type, x, y):
 
 def render(canvas):
     for obj in game_objects:
-        if obj.image is not None and obj.is_active:
-            width = obj.image.get_width()
-            height = obj.image.get_height()
-
-            render_pos = (obj.x - width / 2, obj.y - height / 2)
-
-            canvas.blit(obj.image, render_pos)
+        obj.render(canvas)
 
 class GameObject:
     def __init__(self, x, y):
@@ -37,6 +39,24 @@ class GameObject:
         self.y = y
         self.image = None
         self.is_active = True
+        self.box_collider = None
+
+    def update(self):
+        if self.box_collider is not None:
+            self.box_collider.x = self.x
+            self.box_collider.y = self.y
+
+    def render(self, canvas):
+        if self.image is not None and self.is_active:
+            width = self.image.get_width()
+            height = self.image.get_height()
+
+            render_pos = (self.x - width / 2, self.y - height / 2)
+
+            canvas.blit(self.image, render_pos)
+
+        if self.box_collider is not None:
+            self.box_collider.render(canvas)
 
     def deactivate(self):
         self.is_active = False
